@@ -1,0 +1,112 @@
+﻿<!
+The MIT License (MIT) https://mit-license.org/
+
+Copyright 2022 Everest Software LLC https://www.hmisys.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
+associated documentation files (the “Software”), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, publish, distribute, 
+sub-license, and/or sell copies of the Software, and to permit persons to whom the Software is 
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial 
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT 
+NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES 
+OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+>
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <title>Pointer gauge</title>
+      <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script src="ptrGauge-1.0.0.0.js"></script>
+    </head>
+
+    <body>
+     <canvas id="PTRG1" style="position:absolute; top:10px; left:10px;" width="56" height="300"></canvas>
+     <canvas id="PTRG2" style="position:absolute; top:210px; left:200px;" width="300" height="100"></canvas>
+
+     <input id="aSlider" type="range" min="0" max="100" step="1" onchange="sliderUpdate(value)" 
+	        style="position:absolute; top:400px; left:10px;">
+			
+	 <div id="cbDIV1" style="position:absolute; top:80px; left:100px;>
+	  <div id="cbDIV1A">
+       <input type="checkbox" id="cbInvert"onclick="checkBoxClick(id)"/input>  
+       <label>Invert</label>
+	 </div>
+
+	 <div id="cbDIV2" style="position:absolute; top:100px; left:100px;>
+	  <div id="cbDIV2A">
+       <input type="checkbox" id="cbMirror" onclick="checkBoxClick(id)"/input>  
+       <label>Mirror</label>
+	 </div>
+
+     	 
+    <script>
+	 var sliderValue = 0, invert = false, mirror = false, line = false;
+		
+	 //all options are optional.  	
+     var PTRGVar1 = new PtrGauge("PTRG1",{
+                 "invert":invert,
+				 "color":"red",
+				 "ptrPosition":0,		//0= left/bottom 1 = right/top
+				 "ptrSize":17,
+				 "lineWidth":0,	   //set to zero (or do not set) for no line
+				 "mirror":mirror
+				 }
+	 );
+
+     var PTRGVar2 = new PtrGauge("PTRG2",{
+                 "invert":invert,
+				 "color":"red",
+				 "ptrPosition":1,		//0= left/bottom 1 = right/top
+				 "ptrSize":17,
+				 "lineWidth":1,	   //set to zero (or do not set) for no line
+				 "mirror":mirror
+				 }
+	 );
+	 
+	  aSlider.value = 0; //not sure what I was doing wrong. Setting "value", when the slider was designed did not work.
+	  cbInvert.checked = invert; //reload the checkbox were saved, I did not want that for testing.
+	  cbMirror.checked = mirror; 
+	  
+	  UpdateGuages();	//initial render		
+      
+	  function UpdateGuages () {
+	   PTRGVar1.DrawGauge(sliderValue);
+	   PTRGVar2.DrawGauge(sliderValue);
+	  };
+	  
+	  function sliderUpdate(value) {
+	   sliderValue = value;
+	   UpdateGuages();
+	  };
+	   
+	  function checkBoxClick(id) {
+	   var state = document.getElementById(id).checked; 
+	   switch (id) {
+	    case "cbInvert":	
+		 invert = state; 
+		 break;
+	    case "cbMirror": 	
+		 mirror = state; 
+		 break;
+	   };			//end of switch
+		
+	   PTRGVar1.SetProperties(invert,mirror);
+	   PTRGVar2.SetProperties(invert,mirror);
+	   UpdateGuages();
+	  };			//end of checkBoxClick
+      		
+    </script>
+				 
+    </body>
+
+</html>
+
